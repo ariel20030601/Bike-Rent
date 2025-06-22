@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %} About Us {% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/faq.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="faq-container">
+  <h2 class="faq-title">FAQs</h2>
+  <div class="accordion" id="faqAccordion">
+    <div class="faq-item">
+        <div class="faq-question">
+            <span class="question-text">Can I buy Liquid Death wholesale?</span>
+            <span class="plus">+</span>
+        </div>
+        <div class="faq-answer">
+            <p>Yes, you can apply for wholesale accounts on our site.</p>
+        </div>
+    </div>
+    <div class="faq-item">
+        <div class="faq-question">
+            <span class="question-text">What kinds of bikes can I rent here?</span>
+            <span class="plus">+</span>
+        </div>
+        <div class="faq-answer">
+            <p>We have a large variety of bikes that can be selected, from casual city bikes to roam around the city, to electric and off-road bikes for the more veteran and explorative users</p>
+        </div>
+    </div>
+    <div class="faq-item">
+        <div class="faq-question">
+            <span class="question-text">Am I allowed to rent multiple bikes at once?</span>
+            <span class="plus">+</span>
+        </div>
+        <div class="faq-answer">
+            <p>Yes, renting multiple bikes is allowed, and can be rather useful if renting for other people, or bikes for many purposes</p>
+        </div>
+    </div>
+
+<script>
+  document.querySelectorAll('.faq-question').forEach((question) => {
+    question.addEventListener('click', () => {
+      const item = question.closest('.faq-item');
+      const answer = item.querySelector('.faq-answer');
+
+      const isOpen = item.classList.contains('active');
+
+      // Close all
+      document.querySelectorAll('.faq-item').forEach((el) => {
+        el.classList.remove('active');
+        const ans = el.querySelector('.faq-answer');
+        ans.style.maxHeight = null;
+      });
+
+      // Open clicked if it wasn't already
+      if (!isOpen) {
+        item.classList.add('active');
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+      }
+    });
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %} Bike Rent {% endblock %}
+
+{% block content %}
+
+<div class="container-fluid my-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow">
+        <div class="row g-0">
+        
+          <div class="col-md-7 p-4">
+            <h2>{{ bike.name }}</h2>
+            <p class="text-muted">{{ bike.Manufacturer }}</p>
+            <p>{{ bike.Description }}</p>
+            <p><strong>Price per day:</strong> ${{ "%.2f"|format(bike.rental_price) }}</p>
+            <p>
+              <strong>Status:</strong>
+              {% if bike.available %}
+                <span class="badge bg-success">Available</span>
+              {% else %}
+                <span class="badge bg-secondary">Not Available</span>
+              {% endif %}
+            </p>
+            <p><strong>Estimated cost:</strong>
+            <span id="totalCost" name="totalCost"></span></p>
+            <p><strong>Return Date:</strong>
+            <span id="returnDate"></span></p>
+
+
+
+            <form method="POST" class="mt-4">
+
+              <div class="input-group mb-3 w-50">
+                <input type="number" id="days" name="days" class="form-control" placeholder="Days to rent" required>
+                <button class="btn btn-primary" type="submit" {% if not bike.available %}disabled{% endif %}>
+                  Rent Now
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div class="col-md-5">
+            <img src="{{ url_for('static', filename='BikePics/' + bike.image_url) }}"
+                 class="img-fluid h-100 w-100 rounded-end" style="object-fit: cover;" alt="{{ bike.name }}">
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+    const today = new Date();
+    const pricePerDay = {{ bike.rental_price|default(0)|tojson }};
+    const daysInput = document.getElementById('days');
+
+    function updateCost() {
+        const days = parseInt(daysInput.value);
+        const totalCost = isNaN(days) ? 0 : days * pricePerDay;
+        const ReturnDate = new Date(today);
+        ReturnDate.setDate(today.getDate() + days);
+        document.getElementById('totalCost').textContent = `$${totalCost.toFixed(2)}`;
+        document.getElementById('returnDate').textContent = ReturnDate.toLocaleDateString();
+    }
+
+    daysInput.addEventListener('input', updateCost);
+    updateCost(); // initial calculation
+
+</script>
+
+{% endblock %}

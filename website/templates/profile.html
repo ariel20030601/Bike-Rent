@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block title %} Profile {% endblock %}
+
+{% block content %}
+
+<div class="container-xxl my-5">
+  <div class="row">
+    
+    <!-- Left: Rented Bikes -->
+    <div class="col-md-7">
+      <h3 class="text-center">Your Rented Bikes</h3>
+
+      {% for bike in owned_bikes %}
+      {% set rental = user_rentals | selectattr("bike_id", "equalto", bike.id) | list | first %}
+      {% set days_left = (rental.return_date - now).days %}
+          <div class="container my-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card mb-3 shadow-sm">
+        <div class="row g-0">
+          <div class="col-md-4 d-flex align-items-center">
+            <img src="{{ url_for('static', filename='BikePics/' + bike.image_url) }}"
+                 class="img-fluid rounded-start" alt="{{ bike.name }}">
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title">{{ bike.name }}</h5>
+              <p class="card-text">
+                <strong>Days Left:</strong> 
+                {% if days_left > 0 %}
+                  {{ days_left }} day{{ 's' if days_left != 1 else '' }}
+                {% else %}
+                  <span class="text-danger">Overdue</span>
+                {% endif %}
+                <br>
+                <strong>Return By:</strong> {{ rental.return_date.strftime("%Y-%m-%d") }} <br>
+                <strong>Total Paid: </strong> ${{ "%.2f"|format(rental.payment) }}
+                <form action="{{ url_for('views.extend_rental', rental_id=rental.id) }}" method="POST"></form>
+                <div class="d-flex gap-2 mb-3 w-50">
+                    <input type="number" id="days-{{ loop.index }}" name="days" class="form-control" placeholder="Extend By" required>
+                    <button class="btn btn-primary" type="submit">
+                      Extend
+                    </button>
+                </div>
+                </form>
+                <div id="extraInfo-{{ loop.index }}" class="d-none">
+                  <strong>Additional Cost:</strong> <span id="newCost-{{ loop.index }}"></span><br>
+                  <strong>New Return Date:</strong> <span id="newReturnDate-{{ loop.index }}"></span>
+              </div>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <script>
+        const payment{{ loop.index }} = {{ rental.payment|default(0)|tojson }};
+        const pricePerDay{{ loop.index }} = {{ bike.rental_price|default(0)|tojson }};
+        const returnDate{{ loop.index }} = new Date({{ rental.return_date.isoformat()|tojson }});
+
+        const daysInput{{ loop.index }} = document.getElementById('days-{{ loop.index }}');
+        const extraInfo{{ loop.index }} = document.getElementById('extraInfo-{{ loop.index }}');
+        const newCostSpan{{ loop.index }} = document.getElementById('newCost-{{ loop.index }}');
+        const newDateSpan{{ loop.index }} = document.getElementById('newReturnDate-{{ loop.index }}');
+
+          daysInput{{ loop.index }}.addEventListener('input', function () {
+          const days = parseInt(this.value);
+
+          if (!isNaN(days) && days > 0) {
+            const newCost = pricePerDay{{ loop.index }} * days;
+            const newDate = new Date(returnDate{{ loop.index }});
+            newDate.setDate(newDate.getDate() + days);
+
+            newCostSpan{{ loop.index }}.textContent = `$${newCost.toFixed(2)}`;
+            newDateSpan{{ loop.index }}.textContent = newDate.toLocaleDateString();
+
+            extraInfo{{ loop.index }}.classList.remove('d-none');
+          } else {
+            extraInfo{{ loop.index }}.classList.add('d-none');
+          }
+        });
+      </script>
+      {% endfor %}
+    </div>
+
+    <!-- Right: Profile Info -->
+    <div class="col-md-5 d-flex align-items-center">
+      <div class="card mb-3 shadow p-4" style="margin-top: 30px;">
+        <h4 class="card-title mb-3">Profile Info</h4>
+        <p><strong>Name:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Current Balance:</strong> ${{ user.balance }}</p>
+        <button class="btn btn-outline-primary mt-3" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</a>
+        <button class="btn btn-outline-danger mt-3" data-bs-toggle="modal" data-bs-target="#addFundsModal">Add Funds</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Add Funds Modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+    
+      <div class="modal-header">
+        <h5 class="modal-title" id="addFundsLabel">Edit Profile</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <form method="POST" action="{{ url_for('views.edit_profile') }}">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="username" class="form-label">Name: </label>
+            <input type="text" name="name" id="name" class="form-control" value="{{ user.username }}" required>
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email: </label>
+            <input type="text" name="email" id="email" class="form-control" value="{{ user.email }}" required>
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password: </label>
+            <input type="password" name="password" id="password" class="form-control" required>
+          </div>
+            <div class="mb-3">
+            <label for="password2" class="form-label">Confirm Password: </label>
+            <input type="password" name="password2" id="password2" class="form-control" required>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Confirm Changes</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+      
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="addFundsModal" tabindex="-1" aria-labelledby="addFundsLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+    
+      <div class="modal-header">
+        <h5 class="modal-title" id="addFundsLabel">Add Funds</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <form method="POST" action="{{ url_for('views.add_balance') }}">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="amount" class="form-label">Amount ($)</label>
+            <input type="number" name="amount" id="amount" class="form-control" min="1" required>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Add</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+      
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %} Bikes Management {% endblock %}
+
+{% block content %}
+
+<div class="container-xl my-5">
+  <h3 class="text-center mb-4">Available Bikes</h3>
+  <div class="table-responsive">
+    <table class="table table-secondary align-middle text-center shadow p-3 mb-5 rounded">
+      <thead class="table table-dark">
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Manufacturer</th>
+          <th scope="col">Description</th>
+          <th scope="col">Price/Day</th>
+          <th scope="col">Status</th>
+          <th scope="col">Actions </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for bike in bikes %}
+      <form method="POST" action="{{ url_for('views.modify_bike', bike_id=bike.id)}}">
+        <tr id="row-{{ bike.id }}">
+          <td><input class="form-control" type="text" name="name" value="{{ bike.name }}" readonly></td>
+          <td><input class="form-control" type="text" name="manufacturer" value="{{ bike.Manufacturer }}" readonly></td>
+          <td><textarea class="form-control" rows="6" name="description" readonly>{{ bike.Description }}</textarea></td>
+          <td><input class="form-control" type="number" name="rental_price" value="{{ bike.rental_price }}" step="0.01" readonly></td>
+          <td>
+            {% if bike.available %}
+              <span class="badge bg-success">Available</span>
+            {% else %}
+              <span class="badge bg-danger">Rented</span>
+            {% endif %}
+          </td>
+          <td>
+          
+            <div class="d-flex gap-2 mb-3 w-50">
+              <button type="submit" class="btn btn-sm mr-2 btn-success d-none" id="save-btn-{{ bike.id }}">Save</button>
+            </form>
+              <button class="btn btn-sm btn-warning mr-2" onclick="enableEdit({{ bike.id }})">Edit</button>
+              <form action="{{ url_for('views.delete_bike', bike_id=bike.id) }}" method="POST" class="form-inline">
+                <button class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this bike?')">Delete</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  function enableEdit(id) {
+  const row = document.getElementById('row-' + id);
+  const inputs = row.querySelectorAll('input, textarea');
+  inputs.forEach(input => input.removeAttribute('readonly'));
+
+  row.querySelector('.btn-warning').classList.add('d-none');
+  document.getElementById(`save-btn-${id}`).classList.remove('d-none');
+}
+</script>
+
+{% endblock %}

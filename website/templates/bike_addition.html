@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %} Add Book {% endblock %}
+
+{% block content %}
+<div class="container-xl shadow p-4 my-5 center" style="background-color: #b9b9b9;">
+<form method="POST">
+    <h3 align="center"> Add Bike </h3>
+    <div class="form-group">
+        <label for="name">Name </label>
+        <input type="name" class="form-control" id="name" name="name" placeholder="Enter bike name" required>
+    </div>
+    <div class="form-group">
+        <label for="manufacturer">Manufacturer</label>
+        <input type="text" class="form-control" id="manufacturer" name="manufacturer" placeholder="Enter manufacturer name">
+    </div>
+    <div class="form-group">
+        <label for="image_url">image_url</label>
+        <input type="text" class="form-control" id="image_url" name="image_url" placeholder="Enter image URL">
+    </div>
+    <div class="input-group">
+        <span class="input-group-text">Description </span>
+        <textarea class="form-control" aria-label="With textarea" name="description"></textarea>
+    </div>
+    <br/>
+    <div class="input-group mb-3">
+        <span class="input-group-text">$</span>
+        <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)" name="rental_price" required>
+        <span class="input-group-text">.00</span>
+    </div>
+    <br/>
+    <button type="submit" class="btn btn-primary"> Add Bike </button>
+</form>
+</div>
+{% endblock %}
