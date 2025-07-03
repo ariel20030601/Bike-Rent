@@ -11,22 +11,24 @@
     <p class="text-center">Explore our collection of bikes available for rent.</p>
     {% if bikes %}
     <div class="container-lg my-5">
-    <h2 class="text-center mb-4">Available Bikes</h2>
-    <div class="row justify-content-center">
-    {% for bike in bikes %}
-    <div class="col-md-4 mb-4">
-      <a href="Bikes/{{ bike.name }}" class="text-decoration-none text-dark">
-        <div class="card h-150 shadow-sm">
-          <img src="{{ url_for('static', filename='BikePics/' + bike.image_url) }}"
-               class="card-img-top" style="height: 200px; object-fit: cover;" alt="{{ bike.name }}">
-            <div class="card-body">
-                <h5 class="card-title">{{ bike.name }}</h5>
-                <p class="card-text">{{ bike.Manufacturer }}</p>
-          </div>
+      <h2 class="text-center mb-4">Available Bikes</h2>
+      <div class="row justify-content-center">
+        {% for bike in bikes %}
+        <div class="col-md-4 mb-4">
+          <a href="Bikes/{{ bike.name }}" class="text-decoration-none text-dark">
+            <div class="card h-150 shadow-sm">
+              <img src="{{ url_for('static', filename='BikePics/' + bike.image_url) }}"
+                  class="card-img-top" style="height: 200px; object-fit: contain;" alt="{{ bike.name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ bike.name }}</h5>
+                    <p class="card-text">{{ bike.Manufacturer }}</p>
+                </div>
+            </div>
+          </a>
         </div>
-      </a>
+        {% endfor %}
+        {% endif %}
+      </div>
     </div>
-    {% endfor %}
-    {% endif %}
 </div>
 {% endblock %}

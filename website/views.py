@@ -126,7 +126,6 @@ def modify_bike(bike_id):
         return redirect(url_for('views.manage_bikes'))
     
 @views.route("/about")
-@login_required
 def about():
     return render_template("AboutUs.html", user=current_user)
 

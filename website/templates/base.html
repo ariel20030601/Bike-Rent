@@ -26,11 +26,11 @@
         <span class="navbar-toggler-icon"> </span>
     </button>
     <div class="collapse navbar-collapse" id="navbar">
-      <div class="navbar-nav">
+      <div class="navbar-nav ml-auto">
         {% if current_user.is_authenticated %}
         <a class="nav-item nav-link" id="home" href="/"> Home </a>
         <a class="nav-item nav-link" id="profile" href="/profile"> Profile </a>
-          {% if current_user.username == 'Admin' %}
+          {% if current_user.username == 'Admin' or current_user.username == 'Admin1' %}
           <a class="nav-item nav-link" id="addBooks" href="/add-bike"> Add Bike </a>
           <a class="nav-item nav-link" id="manageBikes" href="/manage-bikes"> Manage Bikes </a>
           {% endif %}
@@ -40,10 +40,6 @@
         <a class="nav-item nav-link" id="signUp" href="/sign-up"> Sign Up </a>
         {% endif %}
       </div>
-      <div class="navbar-nav ml-auto">
-        <a class="nav-item nav-link" id="about" href="/about"> About </a>
-        <a class="nav-item nav-link" id="contact" href="/contact"> Contact </a>
-    </div>
 </nav>
 {% with messages = get_flashed_messages(with_categories=true) %}
 {% if messages %}
@@ -69,6 +65,20 @@
   {% block content %}
   {% endblock %}
 
+  <footer class="footer mt-auto py-3 bg-light">
+    <div class="container text-center py-4">
+      <p class="text-muted mb-1">
+        <a href="/about" class="text-muted mx-2">About Us</a> |
+        <a href="/contact" class="text-muted mx-2">Contact</a>
+      </p>
+      <p class="text-muted mb-1">Follow us on:
+        <a href="https://www.facebook.com" target="_blank" class="text-muted"><i class="fa fa-facebook"></i></a>
+        <a href="https://www.twitter.com" target="_blank" class="text-muted"><i class="fa fa-twitter"></i></a>
+        <a href="https://www.instagram.com" target="_blank" class="text-muted"><i class="fa fa-instagram"></i></a>
+      </p>
+      <p class="text-muted mb-0">© 2023 Bike Rental Service. All rights reserved.</p>
+    </div>
+  </footer>
 
   <script
       src="https://code.jquery.com/jquery-3.2.1.slim.min.js"

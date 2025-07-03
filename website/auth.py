@@ -59,7 +59,6 @@ def register():
         email = request.form.get('email')
         username = request.form.get('username')
         password = request.form.get('password')
-
         user = User.query.filter_by(email=email).first()
         if user:
             flash('email or username already exists.', category='error')
